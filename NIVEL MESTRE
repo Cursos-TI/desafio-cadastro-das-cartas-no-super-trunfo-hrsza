@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define NUM_CARTAS 3
+
+typedef struct {
+    char nome[30];
+    int populacao;
+    int area;
+    int pib;
+    int densidade_demografica;
+} Carta;
+
+Carta cartas[NUM_CARTAS] = {
+    {"Brasil", 211000000, 8515767, 2100000, 25},
+    {"Argentina", 45000000, 2780400, 450000, 16},
+    {"Chile", 19000000, 756102, 300000, 25}
+};
+
+void exibir_menu_atributos(int atributo_selecionado) {
+    printf("Escolha o primeiro atributo:\n");
+    printf("1. População\n");
+    printf("2. Área\n");
+    printf("3. PIB\n");
+    printf("4. Densidade Demográfica\n");
+    printf("Escolha (1-4): ");
+}
+
+void exibir_menu_atributos_secundario(int atributo_selecionado) {
+    printf("Escolha o segundo atributo:\n");
+    if (atributo_selecionado != 1) printf("1. População\n");
+    if (atributo_selecionado != 2) printf("2. Área\n");
+    if (atributo_selecionado != 3) printf("3. PIB\n");
+    if (atributo_selecionado != 4) printf("4. Densidade Demográfica\n");
+    printf("Escolha (1-4): ");
+}
+
+int comparar_atributos(int atributo, Carta carta1, Carta carta2) {
+    switch (atributo) {
+        case 1: return carta1.populacao - carta2.populacao;
+        case 2: return carta1.area - carta2.area;
+        case 3: return carta1.pib - carta2.pib;
+        case 4: return carta1.densidade_demografica - carta2.densidade_demografica;
+        default: return 0;
+    }
+}
+
+void comparar_cartas(Carta carta1, Carta carta2, int atributo1, int atributo2) {
+    int resultado1 = comparar_atributos(atributo1, carta1, carta2);
+    int resultado2 = comparar_atributos(atributo2, carta1, carta2);
+
+    int soma1 = (atributo1 == 4 ? carta1.densidade_demografica : (atribto1 == 1 ? carta1.populacao : (atributo1 == 2 ? carta1.area : carta1.pib))) +
+                (atributo2 == 4 ? carta1.densidade_demografica : (atributo2 == 1 ? carta1.populacao : (atributo2 == 2 ? carta1.area : carta1.pib)));
+    
+    int soma2 = (atributo1 == 4 ? carta2.densidade_demografica : (atribto1 == 1 ? carta2.populacao : (atributo1 == 2 ? carta2.area : carta2.pib))) +
+                (atributo2 == 4 ? carta2.densidade_demografica : (atributo2 == 1 ? carta2.populacao : (atributo2 == 2 ? carta2.area : carta2.pib)));
+
+    printf("\nComparando %s e %s:\n", carta1.nome, carta2.nome);
+    printf("Atributo 1: %s = %d\n", atributo1 == 1 ? "População" : atributo1 == 2 ? "Área" : atributo1 == 3 ? "PIB" : "Densidade Demográfica", 
+           atributo1 == 1 ? carta1.populacao : atributo1 == 2 ? carta1.area : atributo1 == 3 ? carta1.pib : carta1.densidade_demografica);
+    printf("Atributo 2: %s = %d\n", atributo2 == 1 ? "População" : atributo2 == 2 ? "Área" : atributo2 == 3 ? "PIB" : "Densidade Demográfica", 
+           atributo2 == 1 ? carta2.populacao : atributo2 == 2 ? carta2.area : atributo2 == 3 ? carta2.pib : carta2.densidade_demografica);
+    
+    printf("Soma %s: %d\n", carta1.nome, soma1);
+    printf("Soma %s: %d\n", carta2.nome, soma2);
+
+    if (soma1 > soma2) {
+        printf("Vencedor: %s\n", carta1.nome);
+    } else if (soma1 < soma2) {
+        printf("Vencedor: %s\n", carta2.nome);
+    } else {
+        printf("Empate!\n");
+    }
+}
+
+int main() {
+    int atributo1, atributo2;
+
+    exibir_menu_atributos(0);
+    scanf("%d", &atributo1);
+    exibir_menu_atributos_secundario(atributo1);
+    scanf("%d", &atributo2);
+
+    if (atributo1 < 1 || atributo1 > 4 || atributo2 < 1 || atributo2 > 4 || atributo1 == atributo2) {
+        printf("Seleção de atributos inválida. Tente novamente.\n");
+        return 1;
+    }
+
+    comparar_cartas(cartas[0], cartas[1], atributo1, atributo2); // Comparando Brasil e Argentina
+    comparar_cartas(cartas[0], cartas[2], atributo1, atributo2); // Comparando Brasil e Chile
+    comparar_cartas(cartas[1], cartas[2], atributo1, atributo2); // Comparando Argentina e Chile
+
+    return 0;
+}
