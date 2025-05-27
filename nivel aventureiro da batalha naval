@@ -1,1 +1,92 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define SIZE 10
+#define WATER 0
+#define SHIP 3
+
+// Função para inicializar o tabuleiro com água
+void initializeBoard(int board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            board[i][j] = WATER;
+        }
+    }
+}
+
+// Função para verificar se a posição do navio é válida
+bool isValidPosition(int board[SIZE][SIZE], int startRow, int startCol, int length, bool isDiagonal) {
+    if (isDiagonal) {
+        // Verifica se a posição diagonal está dentro dos limites
+        for (int i = 0; i < length; i++) {
+            if (startRow + i >= SIZE || startCol + i >= SIZE || board[startRow + i][startCol + i] != WATER) {
+                return false;
+            }
+        }
+    } else {
+        // Verifica se a posição horizontal ou vertical está dentro dos limites
+        for (int i = 0; i < length; i++) {
+            if (startRow >= SIZE || startCol + i >= SIZE || board[startRow][startCol + i] != WATER) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+// Função para posicionar o navio no tabuleiro
+void placeShip(int board[SIZE][SIZE], int startRow, int startCol, int length, bool isDiagonal) {
+    if (isDiagonal) {
+        for (int i = 0; i < length; i++) {
+            board[startRow + i][startCol + i] = SHIP;
+        }
+    } else {
+        for (int i = 0; i < length; i++) {
+            board[startRow][startCol + i] = SHIP;
+        }
+    }
+}
+
+// Função para exibir o tabuleiro
+void displayBoard(int board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            printf("%2d ", board[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int board[SIZE][SIZE];
+    initializeBoard(board);
+
+    // Posicionando navios
+    int shipLength = 3;
+
+    // Navio 1 - Horizontal
+    if (isValidPosition(board, 0, 0, shipLength, false)) {
+        placeShip(board, 0, 0, shipLength, false);
+    }
+
+    // Navio 2 - Vertical
+    if (isValidPosition(board, 1, 0, shipLength, false)) {
+        placeShip(board, 1, 0, shipLength, false);
+    }
+
+    // Navio 3 - Diagonal (crescente)
+    if (isValidPosition(board, 3, 3, shipLength, true)) {
+        placeShip(board, 3, 3, shipLength, true);
+    }
+
+    // Navio 4 - Diagonal (decrescente)
+    if (isValidPosition(board, 5, 7, shipLength, true)) {
+        placeShip(board, 5, 7, shipLength, true);
+    }
+
+    // Exibir o tabuleiro
+    displayBoard(board);
+
+    return 0;
+}
 
